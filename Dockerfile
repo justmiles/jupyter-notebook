@@ -1,4 +1,4 @@
-FROM jupyter/datascience-notebook:lab-4.0.7
+FROM jupyter/datascience-notebook:lab-3.6.2
 
 RUN jupyter labextension install jupyterlab-plotly
 
@@ -9,28 +9,16 @@ ENV GOPATH /home/jovyan/go
 ENV PATH $PATH:/usr/local/go/bin:${GOPATH}/bin
 USER root
 
-RUN curl -sfLO https://golang.org/dl/go1.16.7.linux-amd64.tar.gz \
-  && tar -C /usr/local -xzf go1.16.7.linux-amd64.tar.gz \
-  && rm -rf go go1.16.7.linux-amd64.tar.gz
-
 USER jovyan
 
-RUN mkdir -p $GOPATH \
-  && env GO111MODULE=on /usr/local/go/bin/go get github.com/gopherdata/gophernotes \
-  && mkdir -p /home/jovyan/.local/share/jupyter/kernels/gophernotes \
-  && cd /home/jovyan/.local/share/jupyter/kernels/gophernotes \
-  && cp "$(go env GOPATH)"/pkg/mod/github.com/gopherdata/gophernotes@v0.7.4/kernel/* "." \
-  && chmod +w ./kernel.json # in case copied kernel.json has no write permission \
-  && sed "s|gophernotes|/home/jovyan/go/bin/gophernotes|" < kernel.json.in > kernel.json
-
 # Configure AWS Glue
-RUN pip install sparkmagic \
+RUN pip install sparkmagic "ipywidgets>=7.6" "jupyter-dash" jupyterlab-code-formatter black isort \
   && jupyter nbextension enable --py --sys-prefix widgetsnbextension \
   && jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
 USER root
 
-RUN cd /opt/conda/lib/python3.8/site-packages \
+RUN cd /opt/conda/lib/python3.1/site-packages \
   && jupyter-kernelspec install sparkmagic/kernels/sparkkernel \
   && jupyter-kernelspec install sparkmagic/kernels/pysparkkernel
 
