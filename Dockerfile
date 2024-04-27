@@ -1,4 +1,4 @@
-FROM jupyter/datascience-notebook:lab-3.0.5
+FROM jupyter/datascience-notebook:lab-4.0.7
 
 RUN jupyter labextension install jupyterlab-plotly
 
@@ -39,8 +39,6 @@ USER jovyan
 COPY --chown=jovyan:users sparkmagicconfig.json /home/jovyan/.sparkmagic/config.json
 
 RUN mkdir -p /home/jovyan/.sparkmagic/logs
-
-
 
 EXPOSE 8888
 
